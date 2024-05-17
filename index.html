@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dark And Darker Util</title>
+        <meta charset = "UTF-8">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet"> 
+        <link rel="stylesheet" href="style.css" type="text/css">
+    </head>
+	<body id="body">
+		<div style="border-radius: 25px; width: 50%; margin:0 auto; background-color: rgba(0.35, 0.35, 0.35, 0.7); text-align: center; padding-bottom: 5px">
+			<h1 style="color: #fff">Dark And Darker Util</h1>
+			<ul class="header_list">
+				<li><input type="button" value="Phys Damage Calc" onclick="show_phys_calc();"></input></li>
+				<li><input type="button" value="Magic Damage Calc" onclick="show_magic_calc();"></input></li>
+				<li><input type="button" value="Health Calc" onclick="show_health_calc();"></input></li>
+			</ul>
+		</div>
+		<div class="calc_box" id="phys_calc">
+			<h2>Physical Damage Calculator</h2>
+			<h3>Weapon Damage</h3>
+			<input type="number" id="phys_weapon_damage" value="0"></input>
+			<h3>Physical Power Bonus %</h3>
+			<input type="number" id="ppb_percent" value="0"></input>
+			<h3>Added Physical Damage</h3>
+			<input type="number" id="added_phys_damage" value="0"></input>
+			<h3>True Physical Damage</h3>
+			<input type="number" id="true_phys_damage" value="0"></input>
+			<h3>Target PDR %</h3>
+			<input type="number" id="target_pdr" value="0"></input>
+			<h3>Armor Penetration %</h3>
+			<input type="number" id="armor_pen" value="0"></input>
+			<h3>Weapon Combo Multiplier</h3>
+			<input type="number" id="weapon_combo_multiplier" value="1"></input>
+			<h3>Hitbox</h3>
+			<select id="phys_hitbox">
+				<option value="1.5">Head</option>
+				<option value="1">Body</option>
+				<option value="0.8">Arms</option>
+				<option value="0.6">Legs</option>
+				<option value="0.5">Hands/Feet</option>
+			</select>
+			<br><br>
+			<h2 id="phys_damage_total">Total Damage: 0</h2>
+			<h2 id="dummy_phys_damage_total">Dummy Damage: 0</h2>
+			<input type="button" value="Reset Values" onclick="reset_phys_calc();"></input>
+		</div>
+		<div class="calc_box" id="magic_calc">
+			<h2>Magic Damage Calculator</h2>
+			<h3>Skill or Spell Damage</h3>
+			<input type="number" id="spell_damage" value="0"></input>
+			<h3>Magical Power Bonus %</h3>
+			<input type="number" id="mpb_percent" value="0"></input>
+			<h3>Magic Weapon Damage</h3>
+			<input type="number" id="magic_weapon_damage" value="0"></input>
+			<h3>Added Magical Damage</h3>
+			<input type="number" id="added_magic_damage" value="0"></input>
+			<h3>True Magical Damage</h3>
+			<input type="number" id="true_magic_damage" value="0"></input>
+			<h3>Target MDR %</h3>
+			<input type="number" id="target_mdr" value="0"></input>
+			<h3>Magic Penetration %</h3>
+			<input type="number" id="magic_pen" value="0"></input>
+			<h3>Attribute Scale</h3>
+			<input type="number" id="magic_attribute_scale" value="1"></input>
+			<h3>Hitbox</h3>
+			<select id="magic_hitbox">
+				<option value="1.5">Head</option>
+				<option value="1">Body</option>
+				<option value="0.8">Arms</option>
+				<option value="0.6">Legs</option>
+				<option value="0.5">Hands/Feet</option>
+			</select>
+			<br><br>
+			<h2 id="magic_damage_total">Total Damage: 0</h2>
+			<h2 id="dummy_magic_damage_total">Dummy Damage: 0</h2>
+			<input type="button" value="Reset Values" onclick="reset_magic_calc();"></input>
+		</div>
+		<div class="calc_box" id="health_calc">
+			<h2>Health Calculator</h2>
+			<h3>Strength</h3>
+			<input type="number" id="health_str" value="15"></input>
+			<h3>Vigor</h3>
+			<input type="number" id="health_vig" value="15"></input>
+			<h3>Max Health Bonus %</h3>
+			<input type="number" id="max_health_bonus" value="0"></input>
+			<h3>Added Max Health</h3>
+			<input type="number" id="added_max_health" value="0"></input>
+			<br><br>
+			<h2 id="total_health">Total Health: 0</h2>
+			<h2 id="health_recovery">Health Recovery Bonus: 0%</h2>
+			<h2 id="resting_health">Resting Health Recovered: 1.00 every 2 seconds</h2>
+			<input type="button" value="Reset Values" onclick="reset_health_calc();"></input>
+		</div>
+		<div class="calc_box">
+			<h2>This page is not affiliated with Dark and Darker or IRONMACE in any way.</h2>
+			<h3>All math courtesy of the <a href="https://darkanddarker.wiki.spellsandguns.com/Dark_and_Darker_Wiki">Dark And Darker Wiki</a>.</h3>
+			<h3>Please go <a href="https://darkanddarker.com">purchase</a> Dark and Darker if you haven't yet. It's very fun!</h3>
+		</div>
+	</body>
+</html>
+<script>
+// Really crude way to detect which of the calculators is being used and only bother to update that one
+// Apparently each browser would have it's own way of detecting display elements being changed dynamically so this is easier
+var page_var = 0;
+
+function phys_damage_calculator() {
+	let phys_weapon_damage = Number(document.getElementById("phys_weapon_damage").value);
+	let phys_power_bonus = Number(document.getElementById("ppb_percent").value / 100);
+	let added_phys_damage = Number(document.getElementById("added_phys_damage").value);
+	let true_phys_damage = Number(document.getElementById("true_phys_damage").value);
+	let target_pdr = Number(document.getElementById("target_pdr").value / 100);
+	let armor_pen = Number(document.getElementById("armor_pen").value / 100);
+	let weapon_combo_multiplier = Number(document.getElementById("weapon_combo_multiplier").value);
+	let hit_part_multiplier = Number(document.getElementById("phys_hitbox").value);
+	
+	let phys_damage = ( (
+		phys_weapon_damage * weapon_combo_multiplier
+		* (1 + phys_power_bonus)
+		+ added_phys_damage
+		)
+		* hit_part_multiplier
+		* (1 - target_pdr * (1 - armor_pen))
+		+ true_phys_damage
+		);
+		
+	let dummy_phys_damage = ( (
+		phys_weapon_damage * weapon_combo_multiplier
+		* (1 + phys_power_bonus)
+		+ added_phys_damage
+		)
+		* hit_part_multiplier
+		// Dummy has -12% pdr
+		* (1 - -0.12 * (1 - armor_pen))
+		+ true_phys_damage
+		);
+	
+	document.getElementById("phys_damage_total").innerHTML = "Total Damage: " + parseFloat(phys_damage).toFixed(2);
+	document.getElementById("dummy_phys_damage_total").innerHTML = "Dummy Damage: " + parseFloat(dummy_phys_damage).toFixed(2);
+}
+
+function magic_damage_calculator() {
+	let spell_damage = Number(document.getElementById("spell_damage").value);
+	let magic_power_bonus = Number(document.getElementById("mpb_percent").value / 100);
+	let magic_weapon_damage = Number(document.getElementById("magic_weapon_damage").value);
+	let added_magic_damage = Number(document.getElementById("added_magic_damage").value);
+	let true_magic_damage = Number(document.getElementById("true_magic_damage").value);
+	let target_mdr = Number(document.getElementById("target_mdr").value / 100);
+	let magic_pen = Number(document.getElementById("magic_pen").value / 100);
+	let magic_attribute_scale = Number(document.getElementById("magic_attribute_scale").value);
+	let hit_part_multiplier = Number(document.getElementById("magic_hitbox").value);
+	
+	let magic_damage = ( (
+		(spell_damage + (magic_weapon_damage * magic_attribute_scale))
+		* (1 + magic_power_bonus * magic_attribute_scale)
+		+ added_magic_damage * magic_attribute_scale
+		)
+		* hit_part_multiplier
+		* (1 - target_mdr * (1 - magic_pen))
+		+ (true_magic_damage * magic_attribute_scale)
+	);
+	
+	// dummy has 0% mdr
+	let dummy_magic_damage = ( (
+		(spell_damage + (magic_weapon_damage * magic_attribute_scale))
+		* (1 + magic_power_bonus * magic_attribute_scale)
+		+ added_magic_damage * magic_attribute_scale
+		)
+		* hit_part_multiplier
+		+ (true_magic_damage * magic_attribute_scale)
+	);
+	
+	document.getElementById("magic_damage_total").innerHTML = "Total Damage: " + parseFloat(magic_damage).toFixed(2);
+	document.getElementById("dummy_magic_damage_total").innerHTML = "Dummy Damage: " + parseFloat(dummy_magic_damage).toFixed(2);
+}
+
+function health_calculator() {
+	let strength = Number(document.getElementById("health_str").value);
+	let vigor = Number(document.getElementById("health_vig").value);
+	let max_health_bonus = Number(document.getElementById("max_health_bonus").value / 100);
+	let added_max_health = Number(document.getElementById("added_max_health").value);
+	
+	let sum = strength * 0.25 + vigor * 0.75;
+	
+	const health_thresholds = [0, 10, 50, 75, 100];
+    const health_increments = [3, 2, 1, 0.5];
+	
+	let base_health = 60;
+	for (let i = 0; i < health_thresholds.length - 1; i++) {
+        if (sum > health_thresholds[i]) {
+            let inc_value = Math.min(sum, health_thresholds[i + 1]) - health_thresholds[i];
+            base_health += inc_value * health_increments[i];
+        } else {
+            break;
+        }
+    }
+	let health = base_health * (1 + max_health_bonus) + added_max_health;
+	
+	
+	const recovery_thresholds = [0, 5, 15, 25, 35, 84, 85, 86, 100];
+    const recovery_increments = [5, 3, 7, 5, 2, 1, 3, 2];
+	let health_recovery_bonus = -55;
+	for (let i = 0; i < recovery_thresholds.length - 1; i++) {
+        if (vigor > recovery_thresholds[i]) {
+            let inc_value = Math.min(vigor, recovery_thresholds[i + 1]) - recovery_thresholds[i];
+            health_recovery_bonus += inc_value * recovery_increments[i];
+        } else {
+            break;
+        }
+    }
+	
+	let health_recovery_rate = 1 + (1 * (health_recovery_bonus / 100));
+	
+	document.getElementById("total_health").innerHTML = "Total Health: " + Math.ceil(health);
+	document.getElementById("health_recovery").innerHTML = "Health Recovery Bonus: " + parseFloat(health_recovery_bonus).toFixed(2) + "%";
+	document.getElementById("resting_health").innerHTML = "Resting Health Recovered: " + parseFloat(health_recovery_rate).toFixed(2) + " every 2 seconds";
+}
+
+function reset_magic_calc() {
+	document.getElementById("spell_damage").value = 0;
+	document.getElementById("mpb_percent").value = 0;
+	document.getElementById("magic_weapon_damage").value = 0;
+	document.getElementById("added_magic_damage").value = 0;
+	document.getElementById("true_magic_damage").value = 0;
+	document.getElementById("target_mdr").value = 0;
+	document.getElementById("magic_pen").value = 0;
+	document.getElementById("magic_attribute_scale").value = 1;
+}
+
+function reset_phys_calc() {
+	document.getElementById("phys_weapon_damage").value = 0;
+	document.getElementById("ppb_percent").value = 0;
+	document.getElementById("added_phys_damage").value = 0;
+	document.getElementById("true_phys_damage").value = 0;
+	document.getElementById("target_pdr").value = 0;
+	document.getElementById("armor_pen").value = 0;
+	document.getElementById("weapon_combo_multiplier").value = 1;
+}
+
+function reset_health_calc() {
+	document.getElementById("health_str").value = 15;
+	document.getElementById("health_vig").value = 15;
+	document.getElementById("max_health_bonus").value = 0;
+	document.getElementById("added_max_health").value = 0;
+}
+
+function show_phys_calc() {
+	document.getElementById("body").style.backgroundImage = "url('https://front.darkanddarker.com/media_6.webp')";
+	document.getElementById("phys_calc").style.display = "block";
+	document.getElementById("magic_calc").style.display = "none";
+	document.getElementById("health_calc").style.display = "none";
+	page_var = 0;
+}
+
+function show_magic_calc() {
+	document.getElementById("body").style.backgroundImage = "url('https://front.darkanddarker.com/media_1.webp')";
+	document.getElementById("magic_calc").style.display = "block";
+	document.getElementById("phys_calc").style.display = "none";
+	document.getElementById("health_calc").style.display = "none";
+	page_var = 1;
+}
+
+function show_health_calc() {
+	document.getElementById("body").style.backgroundImage = "url('https://front.darkanddarker.com/media_7.webp')";
+	document.getElementById("health_calc").style.display = "block";
+	document.getElementById("phys_calc").style.display = "none";
+	document.getElementById("magic_calc").style.display = "none";
+	page_var = 2;
+}
+
+function update_calcs() {
+	if (page_var == 0)
+		phys_damage_calculator()
+	if (page_var == 1)
+		magic_damage_calculator()
+	if (page_var == 2)
+		health_calculator()
+}
+
+// Continuously call the function to update the elements
+show_phys_calc();
+window.setInterval(update_calcs, 50);
+</script>

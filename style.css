@@ -1,0 +1,74 @@
+body {
+	background-color: #000;
+	background-image: url("https://front.darkanddarker.com/media_7.webp");
+	text-align: center;
+}
+
+.calc_box {
+	background-color: rgba(0.2, 0.2, 0.2, 0.7);
+	width: 50%;
+	margin: auto;
+	margin-top: 10px;
+	text-align: center;
+	padding-bottom: 1px;
+	padding-top: 1px;
+	border-radius: 25px;
+}
+
+.calc_box h2 {
+	color: #fff;
+	margin: auto;
+}
+
+.calc_box h3 {
+	color: #fff;
+	margin-bottom: 0px;
+	margin-top: 5px;
+}
+
+.calc_box input[type=number]{
+	margin-top: 5px;
+	-moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.calc_box input[type=button]{
+	width: 150px;
+	height: 25px;
+	border: none;
+	background-color: #888;
+	border-radius: 25px;
+}
+
+.calc_box input[type=button]:hover{
+	background-color: #aaa
+}
+
+/*Removes the slider wheel for number inputs on chrome*/
+/* -moz-appearance: textfield; above will apply this to firefox */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+}
+
+.header_list li{
+	display: inline;
+}
+
+.header_list input{
+	width: 150px;
+	height: 25px;
+	border: none;
+	background-color: #555;
+	border-radius: 25px;
+}
+
+.header_list input:hover{
+	background-color: #aaa
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
