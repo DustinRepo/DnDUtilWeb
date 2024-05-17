@@ -18,8 +18,10 @@
 		</div>
 		<div class="calc_box" id="phys_calc">
 			<h2>Physical Damage Calculator</h2>
-			<h3>Weapon Damage <a href="https://darkanddarker.wiki.spellsandguns.com/Damage#Base_Damage"> ?</a></h3>
+			<h3>Base Weapon Damage <a href="https://darkanddarker.wiki.spellsandguns.com/Damage#Base_Damage"> ?</a></h3>
 			<input type="number" id="phys_weapon_damage" value="0"></input>
+			<h3>Added Weapon Damage <a href="https://darkanddarker.wiki.spellsandguns.com/Damage#Gear_%22+N_Weapon_Damage%22"> ?</a></h3>
+			<input type="number" id="phys_added_weapon_damage" value="0"></input>
 			<h3>Physical Power Bonus % <a href="https://darkanddarker.wiki.spellsandguns.com/Damage#Power_Bonus"> ?</a></h3>
 			<input type="number" id="ppb_percent" value="0"></input>
 			<h3>Added Physical Damage <a href="https://darkanddarker.wiki.spellsandguns.com/Damage#%22Additional%22_Damage"> ?</a></h3>
@@ -107,6 +109,7 @@ var page_var = 0;
 
 function phys_damage_calculator() {
 	let phys_weapon_damage = Number(document.getElementById("phys_weapon_damage").value);
+	let phys_added_weapon_damage = Number(document.getElementById("phys_added_weapon_damage").value);
 	let phys_power_bonus = Number(document.getElementById("ppb_percent").value / 100);
 	let added_phys_damage = Number(document.getElementById("added_phys_damage").value);
 	let true_phys_damage = Number(document.getElementById("true_phys_damage").value);
@@ -116,7 +119,8 @@ function phys_damage_calculator() {
 	let hit_part_multiplier = Number(document.getElementById("phys_hitbox").value);
 	
 	let phys_damage = ( (
-		phys_weapon_damage * weapon_combo_multiplier
+		( phys_weapon_damage * weapon_combo_multiplier
+		+ phys_added_weapon_damage)
 		* (1 + phys_power_bonus)
 		+ added_phys_damage
 		)
