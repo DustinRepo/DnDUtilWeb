@@ -141,7 +141,7 @@ function phys_damage_calculator() {
 		);
 	
 	document.getElementById("phys_damage_total").innerHTML = "Total Damage: " + parseFloat(phys_damage).toFixed(2);
-	document.getElementById("dummy_phys_damage_total").innerHTML = "Dummy Damage: " + parseFloat(dummy_phys_damage).toFixed(2);
+	document.getElementById("dummy_phys_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_phys_damage);
 }
 
 function magic_damage_calculator() {
@@ -176,7 +176,7 @@ function magic_damage_calculator() {
 	);
 	
 	document.getElementById("magic_damage_total").innerHTML = "Total Damage: " + parseFloat(magic_damage).toFixed(2);
-	document.getElementById("dummy_magic_damage_total").innerHTML = "Dummy Damage: " + parseFloat(dummy_magic_damage).toFixed(2);
+	document.getElementById("dummy_magic_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_magic_damage);
 }
 
 function health_calculator() {
@@ -188,7 +188,7 @@ function health_calculator() {
 	let sum = strength * 0.25 + vigor * 0.75;
 	
 	const health_thresholds = [0, 10, 50, 75, 100];
-    const health_increments = [3, 2, 1, 0.5];
+	const health_increments = [3, 2, 1, 0.5];
 	
 	let base_health = 60;
 	for (let i = 0; i < health_thresholds.length - 1; i++) {
