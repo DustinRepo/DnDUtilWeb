@@ -1,7 +1,10 @@
 body {
 	background-color: #000;
 	background-image: url("https://front.darkanddarker.com/media_7.webp");
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 	text-align: center;
+	font-family: "Roboto", sans-serif;
 }
 
 .calc_box {
