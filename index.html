@@ -11,8 +11,8 @@
 	<body id="body">
 		<div style="border-radius: 25px; width: 50%; margin:0 auto; background-color: rgba(0.35, 0.35, 0.35, 0.7); text-align: center; padding-bottom: 5px">
 			<h1 style="color: #fff">Dark And Darker Util</h1>
-			<p style="color: #fff;">Note: After the recent changes to the dummy, dummy damage from this calculator is no longer accurate and will not be displayed.</p>
-			<p style="color: #fff;">The rest of the tool still works fine.</p>
+			<p>Note: After the recent changes to the dummy, dummy damage from this calculator is no longer accurate and will not be displayed.</p>
+			<p>The rest of the tool still works fine.</p>
 			<ul class="header_list">
 				<li><input type="button" value="Phys Damage Calculator" onclick="show_phys_calc();"></input></li>
 				<li><input type="button" value="Magic Damage Calculator" onclick="show_magic_calc();"></input></li>
@@ -37,6 +37,9 @@
 			<input type="number" id="armor_pen" value="0"></input>
 			<h3>Weapon Combo Multiplier <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Combo_Bonus"> ?</a></h3>
 			<input type="number" id="weapon_combo_multiplier" value="1"></input>
+			<h3>Weapon Impact Zone Multiplier <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Impact_Zone_Bonus"> ?</a></h3>
+			<p style="margin: 0;">Example: Longsword's red (worst) spot is 60%, so 0.6</p>
+			<input type="number" id="weapon_zone_multiplier" value="1"></input>
 			<h3>Hitbox</h3>
 			<select id="phys_hitbox">
 				<option value="1.5">Head</option>
@@ -120,9 +123,10 @@ function phys_damage_calculator() {
 	let armor_pen = Number(document.getElementById("armor_pen").value / 100);
 	let weapon_combo_multiplier = Number(document.getElementById("weapon_combo_multiplier").value);
 	let hit_part_multiplier = Number(document.getElementById("phys_hitbox").value);
+	let weapon_zone_multiplier = Number(document.getElementById("weapon_zone_multiplier").value);
 	
 	let phys_damage = ( (
-		( phys_weapon_damage * weapon_combo_multiplier
+		( phys_weapon_damage * weapon_combo_multiplier * weapon_zone_multiplier
 		+ phys_added_weapon_damage)
 		* (1 + phys_power_bonus)
 		+ added_phys_damage

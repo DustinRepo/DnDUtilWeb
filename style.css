@@ -7,6 +7,15 @@ body {
 	font-family: "Roboto", sans-serif;
 }
 
+p {
+	color: #fff;
+	margin: 1px auto;
+}
+
+h1 {
+	margin-bottom: 5px;
+}
+
 .calc_box {
 	background-color: rgba(0.2, 0.2, 0.2, 0.7);
 	width: 50%;
@@ -58,15 +67,15 @@ input[type=number]::-webkit-outer-spin-button {
 	display: inline;
 }
 
-.header_list input{
+.header_list input[type=button]{
 	width: 155px;
 	height: 25px;
 	border: none;
-	background-color: #555;
+	background-color: #888;
 	border-radius: 25px;
 }
 
-.header_list input:hover{
+.header_list input[type=button]:hover{
 	background-color: #aaa
 }
 
