@@ -197,14 +197,14 @@ function health_calculator() {
 	const health_thresholds = [0, 10, 50, 75, 100];
 	const health_increments = [3, 2, 1, 0.5];
 	
-	let base_health = 60;
+	let base_health = 75;
 	for (let i = 0; i < health_thresholds.length - 1; i++) {
-        if (sum > health_thresholds[i]) {
-            let inc_value = Math.min(sum, health_thresholds[i + 1]) - health_thresholds[i];
-            base_health += inc_value * health_increments[i];
-        } else {
-            break;
-        }
+	        if (sum > health_thresholds[i]) {
+	            let inc_value = Math.min(sum, health_thresholds[i + 1]) - health_thresholds[i];
+	            base_health += inc_value * health_increments[i];
+	        } else {
+	            break;
+	        }
 	}
 	let health = base_health * (1 + max_health_bonus) + added_max_health;
 	
@@ -213,12 +213,12 @@ function health_calculator() {
 	const recovery_increments = [5, 3, 7, 5, 2, 1, 3, 2];
 	let health_recovery_bonus = -55;
 	for (let i = 0; i < recovery_thresholds.length - 1; i++) {
-        if (vigor > recovery_thresholds[i]) {
-            let inc_value = Math.min(vigor, recovery_thresholds[i + 1]) - recovery_thresholds[i];
-            health_recovery_bonus += inc_value * recovery_increments[i];
-        } else {
-            break;
-        }
+	        if (vigor > recovery_thresholds[i]) {
+	            let inc_value = Math.min(vigor, recovery_thresholds[i + 1]) - recovery_thresholds[i];
+	            health_recovery_bonus += inc_value * recovery_increments[i];
+	        } else {
+	            break;
+	        }
 	}
 	
 	let health_recovery_rate = 1 + (1 * (health_recovery_bonus / 100));
