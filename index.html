@@ -11,8 +11,6 @@
 	<body id="body">
 		<div style="border-radius: 25px; width: 50%; margin:0 auto; background-color: rgba(0.35, 0.35, 0.35, 0.7); text-align: center; padding-bottom: 5px">
 			<h1 style="color: #fff">Dark And Darker Util</h1>
-			<p>Note: After the recent changes to the dummy, dummy damage from this calculator is no longer accurate and will not be displayed.</p>
-			<p>The rest of the tool still works fine.</p>
 			<ul class="header_list">
 				<li><input type="button" value="Phys Damage Calculator" onclick="show_phys_calc();"></input></li>
 				<li><input type="button" value="Magic Damage Calculator" onclick="show_magic_calc();"></input></li>
@@ -50,7 +48,7 @@
 			</select>
 			<br><br>
 			<h2 id="phys_damage_total">Total Damage: 0</h2>
-			<!--<h2 id="dummy_phys_damage_total">Dummy Damage: 0</h2>-->
+			<h2 id="dummy_phys_damage_total">Dummy Damage: 0</h2>
 			<input type="button" value="Reset Values" onclick="reset_phys_calc();"></input>
 		</div>
 		<div class="calc_box" id="magic_calc">
@@ -81,7 +79,7 @@
 			</select>
 			<br><br>
 			<h2 id="magic_damage_total">Total Damage: 0</h2>
-			<!--<h2 id="dummy_magic_damage_total">Dummy Damage: 0</h2>-->
+			<h2 id="dummy_magic_damage_total">Dummy Damage: 0</h2>
 			<input type="button" value="Reset Values" onclick="reset_magic_calc();"></input>
 		</div>
 		<div class="calc_box" id="health_calc">
@@ -142,13 +140,13 @@ function phys_damage_calculator() {
 		+ added_phys_damage
 		)
 		* hit_part_multiplier
-		// Dummy has -12% pdr
-		* (1 - -0.12 * (1 - armor_pen))
+		// Dummy has -22% pdr
+		* (1 - -0.22 * (1 - armor_pen))
 		+ true_phys_damage
 		);
 	
 	document.getElementById("phys_damage_total").innerHTML = "Total Damage: " + parseFloat(phys_damage).toFixed(2);
-	//document.getElementById("dummy_phys_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_phys_damage);
+	document.getElementById("dummy_phys_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_phys_damage);
 }
 
 function magic_damage_calculator() {
@@ -172,18 +170,19 @@ function magic_damage_calculator() {
 		+ (true_magic_damage * magic_attribute_scale)
 	);
 	
-	// dummy has 0% mdr
 	let dummy_magic_damage = ( (
 		(spell_damage + (magic_weapon_damage * magic_attribute_scale))
 		* (1 + magic_power_bonus * magic_attribute_scale)
 		+ added_magic_damage * magic_attribute_scale
 		)
 		* hit_part_multiplier
+		// dummy has 5% mdr
+		* (1 - 0.05 * (1 - magic_pen))
 		+ (true_magic_damage * magic_attribute_scale)
 	);
 	
 	document.getElementById("magic_damage_total").innerHTML = "Total Damage: " + parseFloat(magic_damage).toFixed(2);
-	//document.getElementById("dummy_magic_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_magic_damage);
+	document.getElementById("dummy_magic_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_magic_damage);
 }
 
 function health_calculator() {
