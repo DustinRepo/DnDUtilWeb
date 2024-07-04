@@ -135,7 +135,8 @@ function phys_damage_calculator() {
 		);
 		
 	let dummy_phys_damage = ( (
-		phys_weapon_damage * weapon_combo_multiplier
+		( phys_weapon_damage * weapon_combo_multiplier * weapon_zone_multiplier
+		+ phys_added_weapon_damage)
 		* (1 + phys_power_bonus)
 		+ added_phys_damage
 		)
