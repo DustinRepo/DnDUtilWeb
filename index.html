@@ -21,8 +21,10 @@
 			<h2>Physical Damage Calculator</h2>
 			<h3>Base Weapon Damage <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Base_Damage"> ?</a></h3>
 			<input type="number" id="phys_weapon_damage" value="0"></input>
-			<h3>Added Weapon Damage <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Gear_%22+N_Weapon_Damage%22"> ?</a></h3>
-			<input type="number" id="phys_added_weapon_damage" value="0"></input>
+			<h3>Buff Added Weapon Damage <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Buff_Weapon_Damage"> ?</a></h3>
+			<input type="number" id="phys_buff_added_weapon_damage" value="0"></input>
+			<h3>Gear Added Weapon Damage <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Gear_Weapon_Damage"> ?</a></h3>
+			<input type="number" id="phys_gear_added_weapon_damage" value="0"></input>
 			<h3>Physical Power Bonus % <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Power_Bonus"> ?</a></h3>
 			<input type="number" id="ppb_percent" value="0"></input>
 			<h3>Added Physical Damage <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#%22Additional%22_Damage"> ?</a></h3>
@@ -33,15 +35,15 @@
 			<input type="number" id="target_pdr" value="0"></input>
 			<h3>Armor Penetration % <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Penetration"> ?</a></h3>
 			<input type="number" id="armor_pen" value="0"></input>
-			<h3>Weapon Combo Multiplier <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Combo_Bonus"> ?</a></h3>
+			<h3>Weapon Combo Multiplier <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Combo_Multiplier"> ?</a></h3>
 			<input type="number" id="weapon_combo_multiplier" value="1"></input>
-			<h3>Weapon Impact Zone Multiplier <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Impact_Zone_Bonus"> ?</a></h3>
+			<h3>Weapon Impact Zone Multiplier <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Impact_Zone_Multiplier"> ?</a></h3>
 			<p style="margin: 0;">Example: Longsword's red (worst) spot is 60%, so 0.6</p>
 			<input type="number" id="weapon_zone_multiplier" value="1"></input>
 			<h3>Hitbox</h3>
 			<select id="phys_hitbox">
+				<option value="1">Torso</option>
 				<option value="1.5">Head</option>
-				<option value="1">Body</option>
 				<option value="0.8">Arms</option>
 				<option value="0.6">Legs</option>
 				<option value="0.5">Hands/Feet</option>
@@ -67,12 +69,12 @@
 			<input type="number" id="target_mdr" value="0"></input>
 			<h3>Magic Penetration % <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Penetration"> ?</a></h3>
 			<input type="number" id="magic_pen" value="0"></input>
-			<h3>Attribute Scale <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Attribute_Bonus_Ratio"> ?</a></h3>
+			<h3>Attribute Scale <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Scaling"> ?</a></h3>
 			<input type="number" id="magic_attribute_scale" value="1"></input>
 			<h3>Hitbox</h3>
 			<select id="magic_hitbox">
+				<option value="1">Torso</option>
 				<option value="1.5">Head</option>
-				<option value="1">Body</option>
 				<option value="0.8">Arms</option>
 				<option value="0.6">Legs</option>
 				<option value="0.5">Hands/Feet</option>
@@ -113,7 +115,8 @@ var page_var = 0;
 
 function phys_damage_calculator() {
 	let phys_weapon_damage = Number(document.getElementById("phys_weapon_damage").value);
-	let phys_added_weapon_damage = Number(document.getElementById("phys_added_weapon_damage").value);
+	let phys_buff_added_weapon_damage = Number(document.getElementById("phys_buff_added_weapon_damage").value);
+	let phys_gear_added_weapon_damage = Number(document.getElementById("phys_gear_added_weapon_damage").value);
 	let phys_power_bonus = Number(document.getElementById("ppb_percent").value / 100);
 	let added_phys_damage = Number(document.getElementById("added_phys_damage").value);
 	let true_phys_damage = Number(document.getElementById("true_phys_damage").value);
@@ -124,8 +127,8 @@ function phys_damage_calculator() {
 	let weapon_zone_multiplier = Number(document.getElementById("weapon_zone_multiplier").value);
 	
 	let phys_damage = ( (
-		( phys_weapon_damage * weapon_combo_multiplier * weapon_zone_multiplier
-		+ phys_added_weapon_damage)
+		( (phys_weapon_damage + phys_buff_added_weapon_damage) * weapon_combo_multiplier * weapon_zone_multiplier
+		+ phys_gear_added_weapon_damage)
 		* (1 + phys_power_bonus)
 		+ added_phys_damage
 		)
@@ -135,8 +138,8 @@ function phys_damage_calculator() {
 		);
 		
 	let dummy_phys_damage = ( (
-		( phys_weapon_damage * weapon_combo_multiplier * weapon_zone_multiplier
-		+ phys_added_weapon_damage)
+		( (phys_weapon_damage + phys_buff_added_weapon_damage) * weapon_combo_multiplier * weapon_zone_multiplier
+		+ phys_gear_added_weapon_damage)
 		* (1 + phys_power_bonus)
 		+ added_phys_damage
 		)
