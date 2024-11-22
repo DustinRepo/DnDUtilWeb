@@ -200,7 +200,7 @@ function health_calculator() {
 	const health_thresholds = [0, 10, 50, 75, 100];
 	const health_increments = [3, 2, 1, 0.5];
 	
-	let base_health = 75;
+	let base_health = 60;
 	for (let i = 0; i < health_thresholds.length - 1; i++) {
 	        if (sum > health_thresholds[i]) {
 	            let inc_value = Math.min(sum, health_thresholds[i + 1]) - health_thresholds[i];
