@@ -14,6 +14,7 @@
 			<ul class="header_list">
 				<li><input type="button" value="Phys Damage Calculator" onclick="show_phys_calc();"></input></li>
 				<li><input type="button" value="Magic Damage Calculator" onclick="show_magic_calc();"></input></li>
+				<li><input type="button" value="Animal Calculator" onclick="show_animal_calc();"></input></li>
 				<li><input type="button" value="Health Calculator" onclick="show_health_calc();"></input></li>
 			</ul>
 		</div>
@@ -100,6 +101,44 @@
 			<h2 id="resting_health">Resting Health Recovered: 1.00 every 2 seconds</h2>
 			<input type="button" value="Reset Values" onclick="reset_health_calc();"></input>
 		</div>
+		<div class="calc_box" id="animal_calc">
+			<h2>Animal Damage Calculator</h2>
+			<h3>Animal Form</h3>
+			<select id="animal_calc_animal">
+				<option value="1">Bear</option>
+				<option value="2">Panther</option>
+				<option value="3">Chicken</option>
+				<option value="4">Rat</option>
+			</select>
+			<h3>Primitive Stat <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Primitive_Stat"> ?</a></h3>
+			<input type="number" id="form_stat" value="0"></input>
+			<h3>Physical Power Bonus % <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Power_Bonus"> ?</a></h3>
+			<input type="number" id="animal_ppb_percent" value="0"></input>
+			<h3>Added Physical Damage <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#%22Additional%22_Damage"> ?</a></h3>
+			<input type="number" id="animal_added_phys_damage" value="0"></input>
+			<h3>True Physical Damage <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#True_Damage"> ?</a></h3>
+			<input type="number" id="animal_true_phys_damage" value="0"></input>
+			<h3>Target PDR % <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Damage_Reduction"> ?</a></h3>
+			<input type="number" id="animal_target_pdr" value="0"></input>
+			<h3>Armor Penetration % <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Damage#Penetration"> ?</a></h3>
+			<p style="margin: 0;">Chicken armor pen added automatically</p>
+			<input type="number" id="animal_armor_pen" value="0"></input>
+			<h3>Hitbox</h3>
+			<select id="animal_hitbox">
+				<option value="1">Torso</option>
+				<option value="1.5">Head</option>
+				<option value="0.8">Arms</option>
+				<option value="0.6">Legs</option>
+				<option value="0.5">Hands/Feet</option>
+			</select>
+			<br><br>
+			<h2 id="leftclick_damage_total">Left-Click Damage: 0</h2>
+			<h2 id="rightclick_damage_total">Right-Click Damage: 0</h2>
+			<br>
+			<h2 id="dummy_leftclick_damage_total">Left-Click Dummy Damage: 0</h2>
+			<h2 id="dummy_rightclick_damage_total">Right-Click Dummy Damage: 0</h2>
+			<input type="button" value="Reset Values" onclick="reset_animal_calc();"></input>
+		</div>
 		<div class="calc_box">
 			<h2>This page is not affiliated with Dark and Darker or IRONMACE in any way.</h2>
 			<h3>All math courtesy of the <a target="_blank" href="https://darkanddarker.wiki.spellsandguns.com/Dark_and_Darker_Wiki">Dark And Darker Wiki</a>.</h3>
@@ -112,6 +151,20 @@
 // Really crude way to detect which of the calculators is being used and only bother to update that one
 // Apparently each browser would have it's own way of detecting display elements being changed dynamically so this is easier
 var page_var = 0;
+
+function calculate_damage(weapon_damage, buff_weapon_damage, add_weapon_damage, weapon_combo_mult, weapon_zone_mult, power_bonus, added_damage, true_damage, hitbox_mult, resist, resist_pen) {
+	let damage = ( (
+		( (weapon_damage + buff_weapon_damage) * weapon_combo_mult * weapon_zone_mult
+		+ add_weapon_damage)
+		* (1 + power_bonus)
+		+ added_damage
+		)
+		* hitbox_mult
+		* (1 - resist * (1 - resist_pen))
+		+ true_damage
+		);
+	return damage;
+}
 
 function phys_damage_calculator() {
 	let phys_weapon_damage = Number(document.getElementById("phys_weapon_damage").value);
@@ -126,28 +179,8 @@ function phys_damage_calculator() {
 	let hit_part_multiplier = Number(document.getElementById("phys_hitbox").value);
 	let weapon_zone_multiplier = Number(document.getElementById("weapon_zone_multiplier").value);
 	
-	let phys_damage = ( (
-		( (phys_weapon_damage + phys_buff_added_weapon_damage) * weapon_combo_multiplier * weapon_zone_multiplier
-		+ phys_gear_added_weapon_damage)
-		* (1 + phys_power_bonus)
-		+ added_phys_damage
-		)
-		* hit_part_multiplier
-		* (1 - target_pdr * (1 - armor_pen))
-		+ true_phys_damage
-		);
-		
-	let dummy_phys_damage = ( (
-		( (phys_weapon_damage + phys_buff_added_weapon_damage) * weapon_combo_multiplier * weapon_zone_multiplier
-		+ phys_gear_added_weapon_damage)
-		* (1 + phys_power_bonus)
-		+ added_phys_damage
-		)
-		* hit_part_multiplier
-		// Dummy has -22% pdr
-		* (1 - -0.22 * (1 - armor_pen))
-		+ true_phys_damage
-		);
+	let phys_damage = calculate_damage(phys_weapon_damage, phys_buff_added_weapon_damage, phys_gear_added_weapon_damage, weapon_combo_multiplier, weapon_zone_multiplier, phys_power_bonus, added_phys_damage, true_phys_damage, hit_part_multiplier, target_pdr, armor_pen);
+	let dummy_phys_damage = calculate_damage(phys_weapon_damage, phys_buff_added_weapon_damage, phys_gear_added_weapon_damage, weapon_combo_multiplier, weapon_zone_multiplier, phys_power_bonus, added_phys_damage, true_phys_damage, hit_part_multiplier, -0.12, armor_pen);
 	
 	document.getElementById("phys_damage_total").innerHTML = "Total Damage: " + parseFloat(phys_damage).toFixed(2);
 	document.getElementById("dummy_phys_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_phys_damage);
@@ -180,13 +213,56 @@ function magic_damage_calculator() {
 		+ added_magic_damage * magic_attribute_scale
 		)
 		* hit_part_multiplier
-		// dummy has 5% mdr
-		* (1 - 0.05 * (1 - magic_pen))
+		// dummy has -20% mdr
+		* (1 - -0.2 * (1 - magic_pen))
 		+ (true_magic_damage * magic_attribute_scale)
 	);
 	
 	document.getElementById("magic_damage_total").innerHTML = "Total Damage: " + parseFloat(magic_damage).toFixed(2);
 	document.getElementById("dummy_magic_damage_total").innerHTML = "Dummy Damage: " + Math.floor(dummy_magic_damage);
+}
+
+function animal_calculator() {
+	let selected_animal_form = Number(document.getElementById("animal_calc_animal").value);
+	let primitive_stat = Number(document.getElementById("form_stat").value);
+	let leftclick_weapon_damage = 0;
+	let rightclick_weapon_damage = 0;
+	let phys_power_bonus = Number(document.getElementById("animal_ppb_percent").value / 100);
+	let added_phys_damage = Number(document.getElementById("animal_added_phys_damage").value);
+	let true_phys_damage = Number(document.getElementById("animal_true_phys_damage").value);
+	let target_pdr = Number(document.getElementById("animal_target_pdr").value / 100);
+	let armor_pen = Number(document.getElementById("animal_armor_pen").value / 100);
+	let hit_part_multiplier = Number(document.getElementById("animal_hitbox").value);
+	
+	if (selected_animal_form == 1) { // Bear
+		leftclick_weapon_damage = 15 + (primitive_stat * 0.75);
+		rightclick_weapon_damage = 35 + (primitive_stat * 0.75);
+	} else if (selected_animal_form == 2) { // Panther
+		leftclick_weapon_damage = 10 + (primitive_stat * 0.75);
+		rightclick_weapon_damage = 13 + (primitive_stat * 0.75);
+	} else if (selected_animal_form == 3) { // Chicken
+		leftclick_weapon_damage = 10 + (primitive_stat * 0.75);
+		rightclick_weapon_damage = 0;
+		armor_pen += 0.3;
+	} else if (selected_animal_form == 4) { // Rat
+		leftclick_weapon_damage = 1;
+		rightclick_weapon_damage = 0;
+	}
+	
+	let leftclick_damage = calculate_damage(leftclick_weapon_damage, 0, 0, 1, 1, phys_power_bonus, added_phys_damage, true_phys_damage, hit_part_multiplier, target_pdr, armor_pen);
+	let leftclick_dummy_damage = calculate_damage(leftclick_weapon_damage, 0, 0, 1, 1, phys_power_bonus, added_phys_damage, true_phys_damage, hit_part_multiplier, -0.12, armor_pen);
+	
+	document.getElementById("leftclick_damage_total").innerHTML = "Left-Click Damage: " + parseFloat(leftclick_damage).toFixed(2);
+	document.getElementById("dummy_leftclick_damage_total").innerHTML = "Left-Click Dummy Damage: " + Math.floor(leftclick_dummy_damage);
+	if (rightclick_weapon_damage > 0) {
+		let rightclick_damage = calculate_damage(rightclick_weapon_damage, 0, 0, 1, 1, phys_power_bonus, added_phys_damage, true_phys_damage, hit_part_multiplier, target_pdr, armor_pen);
+		let rightclick_dummy_damage = calculate_damage(rightclick_weapon_damage, 0, 0, 1, 1, phys_power_bonus, added_phys_damage, true_phys_damage, hit_part_multiplier, -0.12, armor_pen);
+		document.getElementById("rightclick_damage_total").innerHTML = "Right-Click Damage: " + parseFloat(rightclick_damage).toFixed(2);
+		document.getElementById("dummy_rightclick_damage_total").innerHTML = "Right-Click Dummy Damage: " + Math.floor(rightclick_dummy_damage);
+	} else {
+		document.getElementById("rightclick_damage_total").innerHTML = "Right-Click Damage: NaN";
+		document.getElementById("dummy_rightclick_damage_total").innerHTML = "Right-Click Dummy Damage: NaN";
+	}
 }
 
 function health_calculator() {
@@ -240,7 +316,7 @@ function reset_magic_calc() {
 	document.getElementById("target_mdr").value = 0;
 	document.getElementById("magic_pen").value = 0;
 	document.getElementById("magic_attribute_scale").value = 1;
-	document.getElementById("magic_hitbox").value = "1.5";
+	document.getElementById("magic_hitbox").value = "1";
 }
 
 function reset_phys_calc() {
@@ -252,7 +328,18 @@ function reset_phys_calc() {
 	document.getElementById("target_pdr").value = 0;
 	document.getElementById("armor_pen").value = 0;
 	document.getElementById("weapon_combo_multiplier").value = 1;
-	document.getElementById("phys_hitbox").value = "1.5";
+	document.getElementById("phys_hitbox").value = "1";
+}
+
+function reset_animal_calc() {
+	document.getElementById("animal_calc_animal").value = 1;
+	document.getElementById("form_stat").value = 0;
+	document.getElementById("animal_ppb_percent").value = 0;
+	document.getElementById("animal_added_phys_damage").value = 0;
+	document.getElementById("animal_true_phys_damage").value = 0;
+	document.getElementById("animal_target_pdr").value = 0;
+	document.getElementById("animal_armor_pen").value = 0;
+	document.getElementById("animal_hitbox").value = "1";
 }
 
 function reset_health_calc() {
@@ -267,6 +354,7 @@ function show_phys_calc() {
 	document.getElementById("phys_calc").style.display = "block";
 	document.getElementById("magic_calc").style.display = "none";
 	document.getElementById("health_calc").style.display = "none";
+	document.getElementById("animal_calc").style.display = "none";
 	page_var = 0;
 }
 
@@ -275,6 +363,7 @@ function show_magic_calc() {
 	document.getElementById("magic_calc").style.display = "block";
 	document.getElementById("phys_calc").style.display = "none";
 	document.getElementById("health_calc").style.display = "none";
+	document.getElementById("animal_calc").style.display = "none";
 	page_var = 1;
 }
 
@@ -283,7 +372,17 @@ function show_health_calc() {
 	document.getElementById("health_calc").style.display = "block";
 	document.getElementById("phys_calc").style.display = "none";
 	document.getElementById("magic_calc").style.display = "none";
+	document.getElementById("animal_calc").style.display = "none";
 	page_var = 2;
+}
+
+function show_animal_calc() {
+	document.getElementById("body").style.backgroundImage = "url('https://front.darkanddarker.com/media_10.webp')";
+	document.getElementById("animal_calc").style.display = "block";
+	document.getElementById("phys_calc").style.display = "none";
+	document.getElementById("magic_calc").style.display = "none";
+	document.getElementById("health_calc").style.display = "none";
+	page_var = 3;
 }
 
 function update_calcs() {
@@ -293,6 +392,8 @@ function update_calcs() {
 		magic_damage_calculator();
 	else if (page_var == 2)
 		health_calculator();
+	else if (page_var == 3)
+		animal_calculator();
 }
 
 // Continuously call the function to update the elements
